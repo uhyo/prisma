@@ -52,7 +52,6 @@ export interface EngineConfig {
   logQueries?: boolean
   logLevel?: 'info' | 'warn'
   env?: Record<string, string>
-  flags?: string[]
   clientVersion?: string
   previewFeatures?: string[]
   engineEndpoint?: string

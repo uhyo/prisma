@@ -125,7 +125,6 @@ export class BinaryEngine extends Engine {
     logLevel,
     logQueries,
     env,
-    flags,
     clientVersion,
     previewFeatures,
     engineEndpoint,
