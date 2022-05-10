@@ -13,7 +13,7 @@ describe('BinaryEngine', () => {
     try {
       const engine = new BinaryEngine({
         flags: ['--flag-that-does-not-exist'],
-        datamodelPath: path.join(__dirname, './runtime-tests/blog/schema.prisma'),
+        inlineSchema: '',
       })
       await engine.start()
     } catch (e) {
