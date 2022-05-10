@@ -42,7 +42,6 @@ export interface DatasourceOverwrite {
 export interface EngineConfig {
   cwd?: string
   dirname?: string
-  datamodelPath: string
   enableDebugLogs?: boolean
   allowTriggerPanic?: boolean // dangerous! https://github.com/prisma/prisma-engines/issues/764
   prismaPath?: string
@@ -60,10 +59,9 @@ export interface EngineConfig {
   activeProvider?: string
 
   /**
-   * The contents of the schema encoded into a string
-   * @remarks only used for the purpose of data proxy
+   * The B64 contents of the schema encoded into a string
    */
-  inlineSchema?: string
+  inlineSchema: string
 
   /**
    * The contents of the datasource url saved in a string

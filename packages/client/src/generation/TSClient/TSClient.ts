@@ -1,6 +1,7 @@
 import type { GeneratorConfig } from '@prisma/generator-helper'
 import type { Platform } from '@prisma/get-platform'
 import { getClientEngineType, getEnvPaths } from '@prisma/sdk'
+import fs from 'fs'
 import indent from 'indent-string'
 import { klona } from 'klona'
 import path from 'path'
@@ -13,7 +14,7 @@ import { buildDirname } from '../utils/buildDirname'
 import { buildDMMF } from '../utils/buildDMMF'
 import { buildInlineDatasource } from '../utils/buildInlineDatasources'
 import { buildInlineEnv } from '../utils/buildInlineEnv'
-import { buildInlineSchema } from '../utils/buildInlineSchema'
+import { buildInlineSchemaHash } from '../utils/buildInlineSchema'
 import { buildNFTAnnotations } from '../utils/buildNFTAnnotations'
 import { buildRequirePath } from '../utils/buildRequirePath'
 import { buildWarnEnvConflicts } from '../utils/buildWarnEnvConflicts'
@@ -86,6 +87,7 @@ export class TSClient implements Generatable {
       engineVersion: this.options.engineVersion,
       datasourceNames: datasources.map((d) => d.name),
       activeProvider: this.options.activeProvider,
+      inlineSchema: (await fs.promises.readFile(schemaPath)).toString('base64'),
     }
 
     // get relative output dir for it to be preserved even after bundling, or
@@ -121,7 +123,7 @@ const config = ${JSON.stringify(config, null, 2)}
 config.document = dmmf
 config.dirname = dirname
 ${buildInlineDatasource(engineType, datasources)}
-${await buildInlineSchema(engineType, schemaPath)}
+${buildInlineSchemaHash(engineType, config.inlineSchema)}
 ${buildInlineEnv(engineType, datasources, envPaths)}
 ${buildWarnEnvConflicts(engineType, runtimeDir, runtimeName)}
 const PrismaClient = getPrismaClient(config)

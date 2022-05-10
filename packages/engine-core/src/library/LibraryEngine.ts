@@ -55,10 +55,11 @@ export class LibraryEngine extends Engine {
   private QueryEngineConstructor?: QueryEngineConstructor
   private library?: Library
   private logEmitter: EventEmitter
+  /** The LibraryEngine accepts the real schema string */
+  private inlineSchema: string
   libQueryEnginePath?: string
   platform?: Platform
   datasourceOverrides: Record<string, string>
-  datamodel: string
   logQueries: boolean
   logLevel: QueryEngineLogLevel
   lastQuery?: string
@@ -73,7 +74,7 @@ export class LibraryEngine extends Engine {
   constructor(config: EngineConfig) {
     super()
 
-    this.datamodel = fs.readFileSync(config.datamodelPath, 'utf-8')
+    this.inlineSchema = Buffer.from(config.inlineSchema, 'base64').toString('utf8')
     this.config = config
     this.libraryStarted = false
     this.logQueries = config.logQueries ?? false
@@ -215,7 +216,7 @@ You may have to run ${chalk.greenBright('prisma generate')} for your changes to 
         try {
           this.engine = new this.QueryEngineConstructor(
             {
-              datamodel: this.datamodel,
+              datamodel: this.inlineSchema,
               env: process.env,
               logQueries: this.config.logQueries ?? false,
               ignoreEnvVarErrors: false,
@@ -385,7 +386,7 @@ You may have to run ${chalk.greenBright('prisma generate')} for your changes to 
 
   getConfig(): Promise<ConfigMetaFormat> {
     return this.library!.getConfig({
-      datamodel: this.datamodel,
+      datamodel: this.inlineSchema,
       datasourceOverrides: this.datasourceOverrides,
       ignoreEnvVarErrors: true,
       env: process.env,
@@ -504,7 +505,6 @@ You may have to run ${chalk.greenBright('prisma generate')} for your changes to 
       eval(`require('path').join(__dirname, '../../../.prisma/client')`), // Dot Prisma Path
       this.config.generator?.output?.value ?? eval('__dirname'), // Custom Generator Path
       path.join(eval('__dirname'), '..'), // parentDirName
-      path.dirname(this.config.datamodelPath), // Datamodel Dir
       this.config.cwd, //cwdPath
       '/tmp/prisma-engines',
     ]

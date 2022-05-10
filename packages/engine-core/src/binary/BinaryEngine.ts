@@ -93,7 +93,8 @@ export class BinaryEngine extends Engine {
   private beforeExitListener?: () => Promise<void>
   private dirname?: string
   private cwd: string
-  private datamodelPath: string
+  /** The BinaryEngine accepts a Base64 schema string */
+  private inlineSchema: string
   private prismaPath?: string
   private stderrLogs = ''
   private currentRequestPromise?: any
@@ -117,7 +118,7 @@ export class BinaryEngine extends Engine {
    */
   constructor({
     cwd,
-    datamodelPath,
+    inlineSchema,
     prismaPath,
     generator,
     datasources,
@@ -141,7 +142,7 @@ export class BinaryEngine extends Engine {
     this.cwd = this.resolveCwd(cwd)
     this.enableDebugLogs = enableDebugLogs ?? false
     this.allowTriggerPanic = allowTriggerPanic ?? false
-    this.datamodelPath = datamodelPath
+    this.inlineSchema = inlineSchema
     this.prismaPath = process.env.PRISMA_QUERY_ENGINE_BINARY ?? prismaPath
     this.generator = generator
     this.datasources = datasources
@@ -339,7 +340,6 @@ You may have to run ${chalk.greenBright('prisma generate')} for your changes to 
       eval(`require('path').join(__dirname, '../../../.prisma/client')`), // Dot Prisma Path
       this.generator?.output?.value ?? eval('__dirname'), // Custom Generator Path
       path.join(eval('__dirname'), '..'), // parentDirName
-      path.dirname(this.datamodelPath), // Datamodel Dir
       this.cwd, //cwdPath
       '/tmp/prisma-engines',
     ]
@@ -483,7 +483,7 @@ ${chalk.dim("In case we're mistaken, please report this to us 🙏.")}`)
 
   private getEngineEnvVars() {
     const env: any = {
-      PRISMA_DML_PATH: this.datamodelPath,
+      PRISMA_DML: this.inlineSchema,
       RUST_BACKTRACE: '1',
       RUST_LOG: 'info',
     }
