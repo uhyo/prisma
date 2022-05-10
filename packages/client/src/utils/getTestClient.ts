@@ -60,6 +60,7 @@ export async function getTestClient(schemaDir?: string, printWarnings?: boolean)
     relativeEnvPaths,
     datasourceNames: config.datasources.map((d) => d.name),
     activeProvider,
+    inlineSchema: Buffer.from(datamodel).toString('base64'),
   }
 
   return getPrismaClient(options)
