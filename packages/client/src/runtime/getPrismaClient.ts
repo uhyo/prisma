@@ -409,7 +409,6 @@ export function getPrismaClient(config: GetPrismaClientConfig) {
             ),
           // we attempt to load env with fs -> attempt inline env -> default
           env: loadedEnv ? loadedEnv.parsed : config.inlineEnv?.parsed ?? {},
-          flags: [],
           clientVersion: config.clientVersion,
           previewFeatures: mapPreviewFeatures(this._previewFeatures),
           activeProvider: config.activeProvider,

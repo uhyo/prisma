@@ -118,14 +118,12 @@ async function getConfigBinary(options: GetConfigOptions): Promise<ConfigMetaFor
       throw new GetConfigError('No schema path or contents provided')
     }
 
-    const engineArgs = []
-
     const args = options.ignoreEnvVarErrors ? ['--ignoreEnvVarErrors'] : []
 
-    const result = await execa(queryEnginePath, [...engineArgs, 'cli', 'get-config', ...args], {
+    const inlineSchema = Buffer.from(schemaContents).toString('base64')
+    const result = await execa(queryEnginePath, ['cli', 'get-config', '--datamodel', inlineSchema, ...args], {
       cwd: options.cwd,
       env: {
-        PRISMA_DML: Buffer.from(schemaContents).toString('base64'),
         RUST_BACKTRACE: '1',
       },
       maxBuffer: MAX_BUFFER,

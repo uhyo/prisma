@@ -86,14 +86,14 @@ async function getDmmfBinary(options: GetDMMFOptions): Promise<DMMF.Document> {
     const execaOptions = {
       cwd: options.cwd,
       env: {
-        PRISMA_DML: Buffer.from(schemaContents).toString('base64'),
         RUST_BACKTRACE: '1',
         ...(process.env.NO_COLOR ? {} : { CLICOLOR_FORCE: '1' }),
       },
       maxBuffer: MAX_BUFFER,
     }
 
-    const args = ['--enable-raw-queries', 'cli', 'dmmf']
+    const inlineSchema = Buffer.from(schemaContents).toString('base64')
+    const args = ['--enable-raw-queries', '--datamodel', inlineSchema, 'cli', 'dmmf']
     result = await execa(queryEnginePath, args, execaOptions)
 
     if (result.stdout.includes('Please wait until the') && options.retry && options.retry > 0) {

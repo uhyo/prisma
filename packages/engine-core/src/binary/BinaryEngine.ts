@@ -74,7 +74,6 @@ export class BinaryEngine extends Engine {
   private logQueries: boolean
   private logLevel?: 'info' | 'warn'
   private env?: Record<string, string>
-  private flags: string[]
   private port?: number
   private enableDebugLogs: boolean
   private allowTriggerPanic: boolean
@@ -154,7 +153,6 @@ export class BinaryEngine extends Engine {
     this.logLevel = logLevel
     this.logQueries = logQueries ?? false
     this.clientVersion = clientVersion
-    this.flags = flags ?? []
     this.previewFeatures = previewFeatures ?? []
     this.activeProvider = activeProvider
     this.connection = new Connection()
@@ -483,7 +481,6 @@ ${chalk.dim("In case we're mistaken, please report this to us 🙏.")}`)
 
   private getEngineEnvVars() {
     const env: any = {
-      PRISMA_DML: this.inlineSchema,
       RUST_BACKTRACE: '1',
       RUST_LOG: 'info',
     }
@@ -546,7 +543,7 @@ ${chalk.dim("In case we're mistaken, please report this to us 🙏.")}`)
 
         const additionalFlag = this.allowTriggerPanic ? ['--debug'] : []
 
-        const flags = ['--enable-raw-queries', ...this.flags, ...additionalFlag]
+        const flags = ['--enable-raw-queries', '--datamodel', this.inlineSchema, ...additionalFlag]
 
         this.port = await this.getFreePort()
         flags.push('--port', String(this.port))
