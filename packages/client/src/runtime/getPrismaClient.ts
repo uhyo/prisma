@@ -12,6 +12,7 @@ import * as sqlTemplateTag from 'sql-template-tag'
 
 import type { InlineDatasources } from '../generation/utils/buildInlineDatasources'
 import { PrismaClientValidationError } from '.'
+import { getInlineSchema } from './core/init/getInlineSchema'
 import { applyModels } from './core/model/applyModels'
 import { createPrismaPromise } from './core/request/createPrismaPromise'
 import type { PrismaPromise } from './core/request/PrismaPromise'
@@ -227,7 +228,7 @@ export interface GetPrismaClientConfig {
   /**
    * The contents of the schema encoded into a string
    */
-  inlineSchema: string
+  inlineSchema?: string
 
   /**
    * The contents of the env saved into a special object
@@ -412,7 +413,7 @@ export function getPrismaClient(config: GetPrismaClientConfig) {
           clientVersion: config.clientVersion,
           previewFeatures: mapPreviewFeatures(this._previewFeatures),
           activeProvider: config.activeProvider,
-          inlineSchema: config.inlineSchema,
+          inlineSchema: getInlineSchema(config),
           inlineDatasources: config.inlineDatasources,
           inlineSchemaHash: config.inlineSchemaHash,
         }
