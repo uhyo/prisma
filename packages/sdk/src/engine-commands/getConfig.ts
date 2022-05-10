@@ -106,15 +106,18 @@ async function getConfigBinary(options: GetConfigOptions): Promise<ConfigMetaFor
   debug(`Using CLI Query Engine (Binary) at: ${queryEnginePath}`)
 
   try {
-    // If we do not get the path we write the datamodel to a tmp location
-    let tempDatamodelPath: string | undefined
-    if (!options.datamodelPath) {
-      try {
-        tempDatamodelPath = await tmpWrite(options.datamodel!)
-      } catch (err) {
-        throw new GetConfigError('Unable to write temp data model path')
-      }
+    let schemaContents: Buffer | string | undefined
+
+    if (options.datamodelPath) {
+      schemaContents = await fs.promises.readFile(options.datamodelPath)
+    } else if (options.datamodel) {
+      schemaContents = options.datamodel
     }
+
+    if (schemaContents === undefined) {
+      throw new GetConfigError('No schema path or contents provided')
+    }
+
     const engineArgs = []
 
     const args = options.ignoreEnvVarErrors ? ['--ignoreEnvVarErrors'] : []
@@ -122,15 +125,11 @@ async function getConfigBinary(options: GetConfigOptions): Promise<ConfigMetaFor
     const result = await execa(queryEnginePath, [...engineArgs, 'cli', 'get-config', ...args], {
       cwd: options.cwd,
       env: {
-        PRISMA_DML_PATH: options.datamodelPath ?? tempDatamodelPath,
+        PRISMA_DML: Buffer.from(schemaContents).toString('base64'),
         RUST_BACKTRACE: '1',
       },
       maxBuffer: MAX_BUFFER,
     })
-
-    if (tempDatamodelPath) {
-      await unlink(tempDatamodelPath)
-    }
 
     data = JSON.parse(result.stdout)
   } catch (e: any) {
