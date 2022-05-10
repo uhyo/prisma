@@ -93,7 +93,7 @@ async function getDmmfBinary(options: GetDMMFOptions): Promise<DMMF.Document> {
     }
 
     const inlineSchema = Buffer.from(schemaContents).toString('base64')
-    const args = ['--enable-raw-queries', '--datamodel', inlineSchema, 'cli', 'dmmf']
+    const args = ['--datamodel', inlineSchema, '--enable-raw-queries', 'cli', 'dmmf']
     result = await execa(queryEnginePath, args, execaOptions)
 
     if (result.stdout.includes('Please wait until the') && options.retry && options.retry > 0) {

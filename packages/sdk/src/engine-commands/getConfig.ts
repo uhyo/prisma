@@ -121,7 +121,7 @@ async function getConfigBinary(options: GetConfigOptions): Promise<ConfigMetaFor
     const args = options.ignoreEnvVarErrors ? ['--ignoreEnvVarErrors'] : []
 
     const inlineSchema = Buffer.from(schemaContents).toString('base64')
-    const result = await execa(queryEnginePath, ['cli', 'get-config', '--datamodel', inlineSchema, ...args], {
+    const result = await execa(queryEnginePath, ['--datamodel', inlineSchema, 'cli', 'get-config', ...args], {
       cwd: options.cwd,
       env: {
         RUST_BACKTRACE: '1',

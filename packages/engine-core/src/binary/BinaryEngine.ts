@@ -543,7 +543,7 @@ ${chalk.dim("In case we're mistaken, please report this to us 🙏.")}`)
 
         const additionalFlag = this.allowTriggerPanic ? ['--debug'] : []
 
-        const flags = ['--enable-raw-queries', '--datamodel', this.inlineSchema, ...additionalFlag]
+        const flags = ['--datamodel', this.inlineSchema, '--enable-raw-queries', ...additionalFlag]
 
         this.port = await this.getFreePort()
         flags.push('--port', String(this.port))
