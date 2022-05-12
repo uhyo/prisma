@@ -14,37 +14,17 @@ it('immediately returns the provided inline schema', () => {
 it('tries to read the schema from `<dirname>/<filename>`', () => {
   const schema = handle(() => getInlineSchema({ dirname: path.join(fixtureDir, 'prisma'), filename: 'schema.prisma' }))
 
-  expect(schema).toMatchInlineSnapshot(`
-    datasource my_db {
-      provider = "postgres"
-      url      = env("POSTGRES_URL")
-    }
-
-    model User {
-      id      String   @default(cuid()) @id
-      name    String
-      hobbies String[]
-    }
-
-  `)
+  expect(schema).toMatchInlineSnapshot(
+    `ZGF0YXNvdXJjZSBteV9kYiB7CiAgcHJvdmlkZXIgPSAicG9zdGdyZXMiCiAgdXJsICAgICAgPSBlbnYoIlBPU1RHUkVTX1VSTCIpCn0KCm1vZGVsIFVzZXIgewogIGlkICAgICAgU3RyaW5nICAgQGRlZmF1bHQoY3VpZCgpKSBAaWQKICBuYW1lICAgIFN0cmluZwogIGhvYmJpZXMgU3RyaW5nW10KfQo=`,
+  )
 })
 
 it('tries to read the schema from `<dirname>/schema.prisma`', () => {
   const schema = handle(() => getInlineSchema({ dirname: path.join(fixtureDir, 'prisma') }))
 
-  expect(schema).toMatchInlineSnapshot(`
-    datasource my_db {
-      provider = "postgres"
-      url      = env("POSTGRES_URL")
-    }
-
-    model User {
-      id      String   @default(cuid()) @id
-      name    String
-      hobbies String[]
-    }
-
-  `)
+  expect(schema).toMatchInlineSnapshot(
+    `ZGF0YXNvdXJjZSBteV9kYiB7CiAgcHJvdmlkZXIgPSAicG9zdGdyZXMiCiAgdXJsICAgICAgPSBlbnYoIlBPU1RHUkVTX1VSTCIpCn0KCm1vZGVsIFVzZXIgewogIGlkICAgICAgU3RyaW5nICAgQGRlZmF1bHQoY3VpZCgpKSBAaWQKICBuYW1lICAgIFN0cmluZwogIGhvYmJpZXMgU3RyaW5nW10KfQo=`,
+  )
 })
 
 it('errors to read a bad schema from `<dirname>/<filename>`', () => {
