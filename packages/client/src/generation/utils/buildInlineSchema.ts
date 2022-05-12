@@ -7,8 +7,8 @@ import crypto from 'crypto'
  * @param inlineSchema
  * @returns
  */
-export function buildInlineSchemaHash(clientEngineType: ClientEngineType, inlineSchema: string) {
-  if (clientEngineType === ClientEngineType.DataProxy) {
+export function buildInlineSchemaHash(clientEngineType: ClientEngineType, inlineSchema?: string) {
+  if (clientEngineType === ClientEngineType.DataProxy && inlineSchema !== undefined) {
     const schemaHash = crypto.createHash('sha256').update(inlineSchema).digest('hex')
 
     return `
