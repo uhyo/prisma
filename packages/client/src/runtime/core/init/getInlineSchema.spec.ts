@@ -30,11 +30,11 @@ it('tries to read the schema from `<dirname>/schema.prisma`', () => {
 it('errors to read a bad schema from `<dirname>/<filename>`', () => {
   const schema = handle(() => getInlineSchema({ dirname: '<dirname>', filename: '<filename>' }))
 
-  expect(schema).toMatchInlineSnapshot(`[Error: ENOENT: no such file or directory, open '<dirname>/<filename>']`)
+  expect(schema).toMatch(`[Error: ENOENT: no such file or directory, open '<dirname>${path.sep}<filename>']`)
 })
 
 it('errors to read a bad schema from `<dirname>/schema.prisma`', () => {
   const schema = handle(() => getInlineSchema({ dirname: '<dirname>' }))
 
-  expect(schema).toMatchInlineSnapshot(`[Error: ENOENT: no such file or directory, open '<dirname>/schema.prisma']`)
+  expect(schema).toMatch(`[Error: ENOENT: no such file or directory, open '<dirname>${path.sep}schema.prisma']`)
 })
